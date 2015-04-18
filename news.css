@@ -1,4 +1,8 @@
 /* CSS declarations go here */
+html, body{
+	overflow-x: hidden;
+}
+
 #progress{
  height: 3px;
  background: #eee;
@@ -62,8 +66,14 @@
 	position:absolute;
 	margin: 0 auto;
 	left: 10%;
+	overflow:hidden;
 }
 
 .headline.current{
 	z-index:1;
+}
+
+.headline.leaving{
+	z-index: 1;
+	pointer-events:none;
 }

@@ -71,10 +71,10 @@
 <template name="yepnope">
   <div class="row">
   <div class="six columns">
-   <button class="button-primary nope">Nope</button>
+   <button class="u-full-width button nope">Nope</button>
   </div>
   <div class="six columns">
-   <button class="button-primary yep">Yep</button>
+   <button class="u-full-width button yep">Yep</button>
   </div> 
   </div>
 </template>
@@ -82,18 +82,39 @@
 <template name="look">
  <div class="container">
  <h1>Look</h1>
+
   <div class="row">
   <h2>Headlines</h2>
   <div class="headline-holder">
   	<div class="headline">
-	 <h3>Next Headline</h3>
+	 <h3>{{nextStory}}</h3>
 	</div>
 	<div class="current headline">
-	 <h3>Current Headline</h3>
+
+	 <h3>{{currentStory.title}}</h3>
+	 <p>{{currentStory.description}}</p>
 	</div>
   </div>
   </div>
   {{ > yepnope }}
+  <div class="row">
+  	<div class="ten columns">
+	<span>Articles:</span>
+  	{{#each readlist}}
+	{{#if text}}
+	<span>Ready</span>
+	{{else}}
+	<span>Loading</span>
+	{{/if}}
+	{{/each}}
+	</div>
+	<div class="two columns">
+		<button id="readnow" class="button-primary">Read</button>
+	</div>
+  </div>
+  
+  <div id="iframeholder" class="hide">
+  </div>
  </div>
 </template>
 
