@@ -1,0 +1,15 @@
+{
+  "name": "News",
+  "version": "1.0.0",
+  "description": "News Reader",
+  "main": "news.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+	"start": "meteor"
+  },
+  "engines": {
+    "node": "0.10.x"
+  },
+  "author": "Daniel Cohen",
+  "license": "ISC"
+}

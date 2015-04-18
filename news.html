@@ -3,12 +3,178 @@
 </head>
 
 <body>
-  <h1>Welcome to Meteor!</h1>
 
-  {{> hello}}
+<script src="//sdk.spritzinc.com/js/2.0/js/spritz.min.js"></script>
 </body>
 
-<template name="hello">
-  <button>Click Me</button>
-  <p>You've pressed the button {{counter}} times.</p>
+<template name="welcome">
+	<div class="container">
+		<div class="row">
+			<h1>Welcome</h1>
+		</div>
+		<div class="row">
+			<div class="six columns">
+				<button id="start" class="button-primary u-full-width">
+					Start
+				</button>
+			</div>
+			<div class="six columns">
+				<button id="enter" class="button u-full-width">
+					Enter
+				</button>
+			</div>
+		</div>
+	</div>
+</template>
+
+<template name="start">
+ <div id="start" class="container plain-modal">
+  <button class="close">&times;</button>
+  <h1>Start</h1>
+   <form>
+   <div class="row">
+    <div class="six columns">
+     <label>Email</label>
+     <input type="email"/>			
+	</div>
+	<div class="six columns">
+     <label>Password</label>
+     <input type="password"/>			
+	</div>
+   </div>
+  </form>
+ </div>
+</template>
+
+<template name="enter">
+ <div id="enter" class="container plain-modal">
+ <button class="close">&times;</button>
+ <h1>Enter</h1>
+  <form>
+   <div class="row">
+    <div class="six columns">
+     <label>Email</label>
+     <input type="email"/>			
+	</div>
+	<div class="six columns">
+     <label>Password</label>
+     <input type="password"/>			
+	</div>
+   </div>
+  </form>
+  <div class="row">
+  <button id="enter-ok" class="pull-right button-primary">OK</button>
+  </div>
+ </div>
+</template>
+
+<template name="yepnope">
+  <div class="row">
+  <div class="six columns">
+   <button class="button-primary nope">Nope</button>
+  </div>
+  <div class="six columns">
+   <button class="button-primary yep">Yep</button>
+  </div> 
+  </div>
+</template>
+
+<template name="look">
+ <div class="container">
+ <h1>Look</h1>
+  <div class="row">
+  <h2>Headlines</h2>
+  <div class="headline-holder">
+  	<div class="headline">
+	 <h3>Next Headline</h3>
+	</div>
+	<div class="current headline">
+	 <h3>Current Headline</h3>
+	</div>
+  </div>
+  </div>
+  {{ > yepnope }}
+ </div>
+</template>
+
+<template name="progress">
+ <div id="progress" class="outter">
+  <div class="inner">
+  </div>
+ </div>
+</template>
+
+<template name="redicle">
+  <div class="row">
+	<h2>Redicle</h2>
+  </div>
+</template>
+
+<template name="read">
+ <div class="container">
+ <h1>Read</h1>
+  {{ > progress }}
+  {{ > redicle }}
+ </div>
+</template>
+
+<template name="listen">
+ <div class="container">
+ <h1>Listen</h1>
+  {{ > progress }}
+  {{ > redicle }}
+  {{ > yepnope }}
+ </div>
+</template>
+
+<template name="talk">
+ <div class="container">
+ <h1>Talk</h1>
+  <div class="row">
+	<textarea></textarea>
+  </div>
+  <div class="row">
+    <div class="six columns">
+     <button class="button u-full-width">Preview</button>
+	</div>    
+	<div class="six columns">
+     <button class="button-primary u-full-width">Submit</button>
+	</div>
+  </div>
+ </div>
+</template>
+
+<template name="me">
+ <div class="container">
+ <h1>Me</h1>
+  <div class="row">
+
+  </div>
+ </div>
+</template>
+
+<template name="spritz">
+		<script type="text/javascript">
+			var hash = window.location.hash;
+			var origin = window.location.protocol + "//" + window.location.host;
+
+			// also set token as window.name, just as a crazy fail safe
+			window.name = hash;
+
+			// postMessage does not work reliably in IE, pass the value through localStorage
+            if (typeof(localStorage) !== 'undefined') {
+                try {
+                	localStorage.setItem("spritz.authResponse", hash);
+            	}
+            	catch(e) {
+            		if(console) {
+            			console.log(e, 'Can\'t write to localStorage');
+            		}
+            	}
+            }
+
+            if (window.opener) {
+               window.opener.postMessage(hash, origin);
+            }
+		</script>
 </template>

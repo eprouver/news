@@ -7,3 +7,9 @@
 meteor-platform
 autopublish
 insecure
+skeleton:skeleton
+iron:router
+jquery
+natestrauser:animate-css
+anti:modals
+chriswessels:hammer

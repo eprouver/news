@@ -1,1 +1,69 @@
 /* CSS declarations go here */
+#progress{
+ height: 3px;
+ background: #eee;
+}
+
+#progress .inner{
+  width: 30%;
+  background: rgb(30, 174, 219);
+  position: relative;
+  height: 100%;
+}
+
+.hide{
+	display:none;
+}
+
+.plain-modal{
+  background: white;
+  top: 6rem;
+  padding: 4rem;	
+}
+
+.pull-left{
+	float:left;
+}
+
+.pull-right{
+	float:right;
+}
+
+.close{
+  float: right;
+  font-size: 3rem;
+  line-height: 2.2rem;
+  position: relative;
+  top: -1rem;
+  border: 1px solid #888;
+  width: 2.2rem;
+  height: 2.2rem;
+  text-align: center;
+  border-radius: 2rem;
+  color: #888;
+  display: block;
+  padding: 0;
+  font-weight: normal;
+  letter-spacing: 0;
+}
+
+.headline-holder{
+  background: #ccc;
+  padding: 0;
+  height: 18rem;
+  position: relative;
+  border: 1px solid #ccc;
+}
+
+.headline{
+	background:white;
+	height: 100%;
+	width: 80%;
+	position:absolute;
+	margin: 0 auto;
+	left: 10%;
+}
+
+.headline.current{
+	z-index:1;
+}
