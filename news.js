@@ -14,6 +14,7 @@ if (Meteor.isClient) {
 	Session.set('stories', []);
 	Session.set('current', 0);
 	Session.set('readlist', []);
+	Session.set('article', 0);
 
 	setTimeout(function () {
 		Session.set('stories', Feeds.find().fetch());
@@ -58,6 +59,8 @@ if (Meteor.isClient) {
 
 	//Look Functions
 	(function () {
+		var maxWords = 10000;
+		
 		function lookYep(e, t) {
 			function addStory(story) {
 				if (!story.text) {
@@ -78,11 +81,11 @@ if (Meteor.isClient) {
 							readlist = _(readlist).map(function(v){
 								if(v._id == story._id){
 									return story;
-									//TODO: I found it, can I break out of this each?
 								}
 								return v;
 							});
 							Session.set('readlist', readlist);
+							$('.container').trigger('wordsAdded');
 							$(self).remove();
 						});
 					}));
@@ -90,6 +93,7 @@ if (Meteor.isClient) {
 					var readlist = Session.get('readlist');
 					readlist.push(story);
 					Session.set('readlist', readlist);
+					$('.container').trigger('wordsAdded');
 				}
 			}
 
@@ -109,12 +113,27 @@ if (Meteor.isClient) {
 				$(this).remove();
 			}));
 		};
+		
+		function totalWords(){
+			return _.chain(Session.get('readlist'))
+				.pluck('text')
+				.filter(function(v){ 
+					return v;})
+				.reduce(function(c, p){ 
+					return c + p.length },0)
+				.value() || 0;
+		};
 
 		Template.look.events( {
 			'click .yep': lookYep,
 			'click .nope': lookNope,
 			'click #readnow': function(){
 				document.location.href = '/read';
+			},
+			'wordsAdded ': function(e, t){
+				$(t.find('.progress .inner')).css({
+					width: ((totalWords() / maxWords)* 100) + '%'
+				});
 			}
 		});
 
@@ -129,9 +148,14 @@ if (Meteor.isClient) {
 			},
 			readlist: function () {
 				return Session.get('readlist');
+			},
+			enough: function(){
+				return (totalWords() / maxWords) >= 1;
 			}
 		})
 	})();
+	
+	//Read Functions
 
 
 }
@@ -139,13 +163,14 @@ if (Meteor.isClient) {
 if (Meteor.isServer) {
 	Meteor.startup(function () {
 		// code to run on server at startup
-
+/*
 	(function scrapeFeeds() {
 		_(Scrape.feed('http://feeds.reuters.com/reuters/politicsNews').items).each(function (v) {
 			v.source = 'Reuters'
 			Feeds.insert(v);
 		});
 	})();
+		*/
 
 	});
 

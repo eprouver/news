@@ -3,16 +3,20 @@ html, body{
 	overflow-x: hidden;
 }
 
-#progress{
+.progress{
  height: 3px;
  background: #eee;
+ overflow:hidden;
 }
 
-#progress .inner{
-  width: 30%;
+.progress .inner{
+  width: 0%;
+  max-width: 100%;
   background: rgb(30, 174, 219);
   position: relative;
   height: 100%;
+  transition: width 0.6s ease;
+  -webkit-transition: width 0.6s ease;
 }
 
 .hide{
@@ -57,6 +61,7 @@ html, body{
   height: 18rem;
   position: relative;
   border: 1px solid #ccc;
+  margin-bottom: 1rem;
 }
 
 .headline{
@@ -76,4 +81,10 @@ html, body{
 .headline.leaving{
 	z-index: 1;
 	pointer-events:none;
+}
+
+.split{
+  width: 48%;
+  float: left;
+  margin: 0 1%;
 }
