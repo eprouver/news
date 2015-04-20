@@ -1,6 +1,7 @@
 /* CSS declarations go here */
-html, body{
+body{
 	overflow-x: hidden;
+	overflow-y: visible;
 }
 
 .progress{
@@ -88,3 +89,50 @@ html, body{
   float: left;
   margin: 0 1%;
 }
+
+
+
+/* Spritz CSS */
+#spritz-holder{
+	text-align:center;
+	width:100%;
+}
+
+#spritzer{
+	display:inline-block;
+	width: 100%;
+}
+
+/* End Spritz CSS */
+
+/* Talk Modal */
+
+.comment-holder{
+  background: #ccc;
+  padding: 0;
+  height: 18rem;
+  position: relative;
+  border: 1px solid #ccc;
+  margin-bottom: 1rem;
+}
+
+.comment{
+	background:white;
+	height: 100%;
+	width: 80%;
+	position:absolute;
+	margin: 0 auto;
+	left: 10%;
+	overflow:hidden;
+}
+
+.comment.current{
+	z-index:1;
+}
+
+.comment.leaving{
+	z-index: 1;
+	pointer-events:none;
+}
+
+/* End Talk Modal */
