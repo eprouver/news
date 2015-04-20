@@ -516,16 +516,14 @@ if (Meteor.isClient) {
 if (Meteor.isServer) {
 	Meteor.startup(function () {
 		// code to run on server at startup
-		/*
-	(function scrapeFeeds() {
-		_(Scrape.feed('http://feeds.reuters.com/reuters/politicsNews').items).each(function (v) {
-			v.source = 'Reuters';
-			v.yeps = 0;
-			v.nopes = 0;
-			Feeds.insert(v);
-		});
-	})();
-		*/
+		(function scrapeFeeds() {
+			_(Scrape.feed('http://feeds.reuters.com/reuters/politicsNews').items).each(function (v) {
+				v.source = 'Reuters';
+				v.yeps = 0;
+				v.nopes = 0;
+				Feeds.insert(v);
+			});
+		})();
 
 	});
 
