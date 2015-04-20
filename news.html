@@ -40,20 +40,184 @@
 <template name="start">
  <div id="start" class="container plain-modal">
   <button class="close">&times;</button>
-  <h1>Start</h1>
+  <h1>Start</h1>  
    <form>
-   <div class="row">
-    <div class="six columns">
-     <label>Email</label>
-     <input type="email"/>			
+   <div id="enter-email">
+	<div class="row">
+     <label>Enter Email</label>
+     <input placeholder="me@sample.com" class="u-full-width" type="email"/>
 	</div>
-	<div class="six columns">
+	<div class="row">
+		<button class="button-primary u-full-width">Continue</button>
+    </div>
+   </div>
+   <div id="enter-personal">
+   	{{ > quiz }}
+   </div>
+   <div id="enter-password">
+	<div class="row">
      <label>Password</label>
-     <input type="password"/>			
+     <input placeholder="secure password" class="u-full-width" type="password"/>			
+	</div>
+	<div class="row">
+		<button class="button-primary u-full-width">Continue</button>
 	</div>
    </div>
   </form>
  </div>
+</template>
+
+<template name="quiz">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <div class="row">
+                <div class="nine columns">Personal Issues</div>
+                <div class="one column">Agree</div>
+                <div class="one column">Maybe</div>
+                <div class="one column">Disagree</div>
+            </div>
+        </div>
+        <div class="panel-body">
+            <div class="row">
+                <div class="nine columns">Government should not censor speech, press, media, or internet.</div>
+                <div class="one column">
+                    <input type="radio" name="question1" value="1" />
+                </div>
+                <div class="one column">
+                    <input type="radio" name="question1" value="0" />
+                </div>
+                <div class="one column">
+                    <input type="radio" name="question1" value="-1" />
+                </div>
+            </div>
+            <div class="row">
+                <div class="nine columns">Military service should be voluntary. There should be no draft.</div>
+                <div class="one column">
+                    <input type="radio" name="question2" value="1" />
+                </div>
+                <div class="one column">
+                    <input type="radio" name="question2" value="0" />
+                </div>
+                <div class="one column">
+                    <input type="radio" name="question2" value="-1" />
+                </div>
+            </div>
+            <div class="row">
+                <div class="nine columns">There should be no laws regarding sex for consenting adults.</div>
+                <div class="one column">
+                    <input type="radio" name="question3" value="1" />
+                </div>
+                <div class="one column">
+                    <input type="radio" name="question3" value="0" />
+                </div>
+                <div class="one column">
+                    <input type="radio" name="question3" value="-1" />
+                </div>
+            </div>
+            <div class="row">
+                <div class="nine columns">Repeal laws prohibiting adult possession and use of drugs.</div>
+                <div class="one column">
+                    <input type="radio" name="question4" value="1" />
+                </div>
+                <div class="one column">
+                    <input type="radio" name="question4" value="0" />
+                </div>
+                <div class="one column">
+                    <input type="radio" name="question4" value="-1" />
+                </div>
+            </div>
+            <div class="row">
+                <div class="nine columns">There should be no National ID card.</div>
+                <div class="one column">
+                    <input type="radio" name="question5" value="1" />
+                </div>
+                <div class="one column">
+                    <input type="radio" name="question5" value="0" />
+                </div>
+                <div class="one column">
+                    <input type="radio" name="question5" value="-1" />
+                </div>
+            </div>
+			<div class="row">
+				<button class="button-primary u-full-width">Continue</button>
+			</div>
+        </div>
+    </div>
+    <div id="enter-economic" class="panel panel-default">
+        <div class="panel-heading">
+            <div class="row">
+                <div class="nine columns">Economic Issues</div>
+                <div class="one column">Agree</div>
+                <div class="one column">Maybe</div>
+                <div class="one column">Disagree</div>
+            </div>
+        </div>
+        <div class="panel-body">
+            <div class="row">
+                <div class="nine columns">End "corporate welfare." No government handouts to business.</div>
+                <div class="one column">
+                    <input type="radio" name="question6" value="1" />
+                </div>
+                <div class="one column">
+                    <input type="radio" name="question6" value="0" />
+                </div>
+                <div class="one column">
+                    <input type="radio" name="question6" value="-1" />
+                </div>
+            </div>
+            <div class="row">
+                <div class="nine columns">End government barriers to international free trade.</div>
+                <div class="one column">
+                    <input type="radio" name="question7" value="1" />
+                </div>
+                <div class="one column">
+                    <input type="radio" name="question7" value="0" />
+                </div>
+                <div class="one column">
+                    <input type="radio" name="question7" value="-1" />
+                </div>
+            </div>
+            <div class="row">
+                <div class="nine columns">Let people control their own retirement; privatize Social Security.</div>
+                <div class="one column">
+                    <input type="radio" name="question8" value="1" />
+                </div>
+                <div class="one column">
+                    <input type="radio" name="question8" value="0" />
+                </div>
+                <div class="one column">
+                    <input type="radio" name="question8" value="-1" />
+                </div>
+            </div>
+            <div class="row">
+                <div class="nine columns">Replace government welfare with private charity.</div>
+                <div class="one column">
+                    <input type="radio" name="question9" value="1" />
+                </div>
+                <div class="one column">
+                    <input type="radio" name="question9" value="0" />
+                </div>
+                <div class="one column">
+                    <input type="radio" name="question9" value="-1" />
+                </div>
+            </div>
+            <div class="row">
+                <div class="nine columns">Cut taxes and government spending by 50% or more.</div>
+                <div class="one column">
+                    <input type="radio" name="question10" value="1" />
+                </div>
+                <div class="one column">
+                    <input type="radio" name="question10" value="0" />
+                </div>
+                <div class="one column">
+                    <input type="radio" name="question10" value="-1" />
+                </div>
+            </div>
+			<div class="row">
+				<button class="button-primary u-full-width">Continue</button>
+			</div>
+        </div>
+    </div>
 </template>
 
 <template name="enter">

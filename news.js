@@ -36,10 +36,15 @@ if (Meteor.isClient) {
 	}]);
 	*/
 
-	setTimeout(function () {
-		Session.set('stories', Feeds.find().fetch());
-		Session.set('current', 0);
-	}, 1000);
+	(function checkforstories() {
+		var stories = Feeds.find().fetch();
+		if(stories.length > 0){
+			Session.set('stories', stories);
+			Session.set('current', 0);			
+		}else{
+			setTimeout(checkforstories, 500);
+		}
+	})();
 
 	//Welcome Functions
 	(function () {
@@ -157,13 +162,16 @@ if (Meteor.isClient) {
 			}));
 
 			//Record Vote
-			Feeds.update( {
-				_id: currentStory._id
-			}, {
-				$set: {
-					yeps: (currentStory.yeps || 0) + 1
-				}
-			});
+			if (currentStory) {
+				Feeds.update( {
+					_id: currentStory._id
+				}, {
+					$set: {
+						yeps: (currentStory.yeps || 0) + 1
+					}
+				});
+			}
+
 			Session.set('current', Session.get('current') + 1);
 			currentStory = Session.get('stories')[Session.get('current')];
 			yepnope_dep.changed();
@@ -176,13 +184,16 @@ if (Meteor.isClient) {
 			}));
 
 			//Record Vote
-			Feeds.update( {
-				_id: currentStory._id
-			}, {
-				$set: {
-					nopes: (currentStory.nopes || 0) + 1
-				}
-			});
+			if (currentStory) {
+				Feeds.update( {
+					_id: currentStory._id
+				}, {
+					$set: {
+						nopes: (currentStory.nopes || 0) + 1
+					}
+				});
+			}
+
 			Session.set('current', Session.get('current') + 1);
 			currentStory = Session.get('stories')[Session.get('current')];
 			yepnope_dep.changed();
@@ -438,7 +449,7 @@ if (Meteor.isClient) {
 				var discussion = Session.get('discussion');
 				discussion.current += 1;
 				Session.set('discussion', discussion);
-				
+
 				Comments.update( {
 					_id: currentComment._id
 				}, {
@@ -480,9 +491,9 @@ if (Meteor.isClient) {
 					var current = Session.get('discussion').current;
 					return length > 0;
 				},
-				moreComments: function(){
+				moreComments: function () {
 					var length = Session.get('discussion').comments.length;
-					var current = Session.get('discussion').current;					
+					var current = Session.get('discussion').current;
 					return length > current;
 				},
 				currentComment: function () {
@@ -493,10 +504,7 @@ if (Meteor.isClient) {
 					return Session.get('discussion').comments;
 				}
 			});
-
 		})();
-
-
 	})();
 
 	/* Review Functions*/
