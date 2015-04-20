@@ -26,7 +26,7 @@ if (Meteor.isClient) {
 	Session.set('stories', []);
 	Session.set('current', 0);
 	if (!Session.get('readlist')) {
-		Session.setPersistent('readlist', []);
+		Session.setPersistent('readlist', new Array());
 	}
 
 	/*
@@ -516,6 +516,7 @@ if (Meteor.isClient) {
 if (Meteor.isServer) {
 	Meteor.startup(function () {
 		// code to run on server at startup
+		/*
 		(function scrapeFeeds() {
 			_(Scrape.feed('http://feeds.reuters.com/reuters/politicsNews').items).each(function (v) {
 				v.source = 'Reuters';
@@ -524,6 +525,7 @@ if (Meteor.isServer) {
 				Feeds.insert(v);
 			});
 		})();
+		*/
 
 	});
 
