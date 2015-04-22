@@ -3,7 +3,7 @@
   <script>
 	var SpritzSettings = {
 		clientId: "91b914ccc9a69290f",
-		redirectUri: "/spritz_login"
+		redirectUri: location.origin + "/spritz_login"
 	};
 	</script>
 	<script src="//sdk.spritzinc.com/js/2.0/js/spritz.min.js"></script>
@@ -14,6 +14,8 @@
   		<div id="spritzer">
 	
   		</div>
+  	</div>
+	<div id="iframeholder" class="hide">
   	</div>
 </body>
 
@@ -40,41 +42,55 @@
 <template name="start">
  <div id="start" class="container plain-modal">
   <button class="close">&times;</button>
-  <h1>Start</h1>  
-   <form>
+  <h1>Start</h1>
+  {{ > progress }}
+   {{ #if isEmail }}
    <div id="enter-email">
+   	<div class="row">
+     <label>Your First Name:</label>
+     <input placeholder="Only the first letter will appear to others" class="u-full-width" type="text"/>
+	</div>
 	<div class="row">
-     <label>Enter Email</label>
+     <label>Your Email:</label>
      <input placeholder="me@sample.com" class="u-full-width" type="email"/>
 	</div>
 	<div class="row">
-		<button class="button-primary u-full-width">Continue</button>
+		<button class="button-primary u-full-width next-step">Continue</button>
     </div>
    </div>
+   {{ /if }}
+   {{ #if isPersonal }}
    <div id="enter-personal">
-   	{{ > quiz }}
+   	{{ > quizPersonal }}
    </div>
+   {{ /if }}
+   {{ #if isEconomic }}   
+   <div id="enter-economic">
+   	{{ > quizEcon }}
+   </div>
+   {{ /if }}
+   {{ #if isPassword }}
    <div id="enter-password">
 	<div class="row">
      <label>Password</label>
-     <input placeholder="secure password" class="u-full-width" type="password"/>			
+     <input placeholder="Secure Password" class="u-full-width" type="password"/>			
 	</div>
 	<div class="row">
-		<button class="button-primary u-full-width">Continue</button>
+		<button type="button" class="button-primary u-full-width new-user">Continue</button>
 	</div>
    </div>
-  </form>
+   {{/if}}
  </div>
 </template>
 
-<template name="quiz">
+<template name="quizPersonal">
     <div class="panel panel-default">
         <div class="panel-heading">
             <div class="row">
-                <div class="nine columns">Personal Issues</div>
-                <div class="one column">Agree</div>
-                <div class="one column">Maybe</div>
-                <div class="one column">Disagree</div>
+                <div class="nine columns"><span class="quiz-heading">Personal Issues</span></div>
+                <div class="one column"><span class="quiz-heading">Yep</span></div>
+                <div class="one column"><span class="quiz-heading">Maybe</span></div>
+                <div class="one column"><span class="quiz-heading">Nope</span></div>
             </div>
         </div>
         <div class="panel-body">
@@ -139,17 +155,19 @@
                 </div>
             </div>
 			<div class="row">
-				<button class="button-primary u-full-width">Continue</button>
+				<button type="button" class="button-primary u-full-width next-step">Continue</button>
 			</div>
         </div>
     </div>
+	</template>
+	<template name="quizEcon">
     <div id="enter-economic" class="panel panel-default">
         <div class="panel-heading">
             <div class="row">
-                <div class="nine columns">Economic Issues</div>
-                <div class="one column">Agree</div>
-                <div class="one column">Maybe</div>
-                <div class="one column">Disagree</div>
+                <div class="nine columns"><span class="quiz-heading">Economic Issues</span></div>
+                <div class="one column"><span class="quiz-heading">Yep</span></div>
+                <div class="one column"><span class="quiz-heading">Maybe</span></div>
+                <div class="one column"><span class="quiz-heading">Nope</span></div>
             </div>
         </div>
         <div class="panel-body">
@@ -214,7 +232,7 @@
                 </div>
             </div>
 			<div class="row">
-				<button class="button-primary u-full-width">Continue</button>
+				<button class="button-primary u-full-width next-step">Continue</button>
 			</div>
         </div>
     </div>
@@ -288,9 +306,6 @@
 		<p>Yep More!</p>
 		{{/if}}
 	</div>
-  </div>
-  
-  <div id="iframeholder" class="hide">
   </div>
  </div>
 </template>
@@ -387,31 +402,47 @@
 
 <template name="review">
  <div class="container">
-  <h1>Review</h1>
-  <div class="row">
- 	<div class="six columns">
-	  Words
-	</div>
-	<div class="six columns">
-	  ####
-	</div>
-  </div>
+  <h1>Round Complete</h1>
   <div class="row">
    <div class="split">
    	 <button id="link-profile" class="button u-full-width">Profile</button>
    </div>
    <div class="split">
-   	 <button id="link-headlines" class="button-primary u-full-width">Headlines</button>
+   	 <button id="link-headlines" class="button-primary u-full-width">Continue</button>
    </div>
+  </div>
+  <hr/>
+  <div class="row">
+   <h2>What You've Read&hellip;</h2>
   </div>
  </div>
 </template>
 
+<template name="badge">
+<div class="person">
+  A
+</div>
+</template>
+
 <template name="me">
  <div class="container">
- <h1>Me</h1>
-  <div class="row">
-
+ <h1>
+  <span data-intro="Your response to 'The World's Smallest Political Quiz'" data-position="right">
+   {{ > badge }}
+  </span>
+ 	 Me
+ </h1>
+  <div class="row" data-intro="Come back to see your 'Yep/Nope' scores here." data-position="bottom">
+	<img class="u-full-width" src="http://placehold.it/500x200"/>
+  </div>
+  <br/>
+  <div class="row" >
+  	<div class="split"> &nbsp;
+		<button class="u-full-width button hide">Retake Political Quiz</button>
+	</div>
+	<div class="split" data-intro="Start reading Headlines!" data-position="top">
+		<button id="to-headlines" class="u-full-width button-primary" >Headlines</button>
+	</div>
   </div>
  </div>
 </template>

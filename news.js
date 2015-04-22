@@ -38,16 +38,56 @@ if (Meteor.isClient) {
 
 	(function checkforstories() {
 		var stories = Feeds.find().fetch();
-		if(stories.length > 0){
+		if (stories.length > 0) {
 			Session.set('stories', stories);
-			Session.set('current', 0);			
-		}else{
+			Session.set('current', 0);
+		}else {
 			setTimeout(checkforstories, 500);
 		}
 	})();
 
 	//Welcome Functions
 	(function () {
+		trimInput = function (value) {
+			return value.replace(/^\s*|\s*$/g, '');
+		};
+
+		isNotEmpty = function (value) {
+			if (value && value !== '') {
+				return true;
+			}
+			console.log('Please fill in all required fields.');
+			return false;
+		};
+
+		isEmail = function (value) {
+			var filter = /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+			if (filter.test(value)) {
+				return true;
+			}
+			console.log('Please enter a valid email address.');
+			return false;
+		};
+
+		isValidPassword = function (password) {
+			if (password.length < 6) {
+				console.log('Your password should be 6 characters or longer.');
+				return false;
+			}
+			return true;
+		};
+
+		areValidPasswords = function (password, confirm) {
+			if (!isValidPassword(password)) {
+				return false;
+			}
+			if (password !== confirm) {
+				console.log('Your two passwords are not equivalent.');
+				return false;
+			}
+			return true;
+		};
+
 		Template.welcome.events( {
 			'click #start': function (e, t) {
 				AntiModals.overlay('start', {
@@ -63,9 +103,42 @@ if (Meteor.isClient) {
 			}
 		});
 
+		var currentStep = 0;
 		Template.start.events( {
 			'click .close': function (e, t) {
 				AntiModals.dismissOverlay(t.firstNode);
+			},
+			'click .next-step': function (e, t) {
+				currentStep += 1;
+				signin_dep.changed();
+				$('.progress .inner').css( {
+					width: 100 * (currentStep / 3) + '%'
+				})
+			},
+			'click .new-user': function () {
+				//TODO: verify all user input and kick them back
+				document.location.href = '/me?first=true';
+			}
+		});
+
+		var signin_dep = new Deps.Dependency();
+
+		Template.start.helpers( {
+			isEmail: function () {
+				signin_dep.depend();
+				return currentStep == 0;
+			},
+			isPersonal: function () {
+				signin_dep.depend();
+				return currentStep == 1;
+			},
+			isEconomic: function () {
+				signin_dep.depend();
+				return currentStep == 2;
+			},
+			isPassword: function () {
+				signin_dep.depend();
+				return currentStep == 3;
 			}
 		});
 
@@ -82,7 +155,6 @@ if (Meteor.isClient) {
 
 	//YepNope Functions
 	(function () {
-
 		Template.yepnope.helpers( {
 			yeps: function () {
 				yepnope_dep.depend();
@@ -96,11 +168,36 @@ if (Meteor.isClient) {
 
 	})();
 
+	function sendToIframe(story) {
+		if (story == undefined) return ;
+
+		var iframe = $(document.createElement('iframe'));
+		//TODO: speed up loading, try DOMcontentloaded
+		$('#iframeholder').append(iframe.attr('src', story.link).on('load', function () {
+			var self = this;
+			Meteor.call('scrapeArticle', this.src, function (e, t) {
+				//TODO: stop loading animation
+				story.text = t.text;
+				var readlist = Session.get('readlist');
+
+				readlist = _(readlist).map(function (v) {
+					if (v._id == story._id) {
+						return story;
+					}
+					return v;
+				});
+				Session.setPersistent('readlist', readlist);
+				$('.container').trigger('wordsAdded');
+				$(self).remove();
+			});
+		}));
+	}
 
 	//Look Functions
 	(function () {
 		var maxWords = 100;
 		var currentStory = Session.get('stories')[Session.get('current')];
+
 		Template.look.data = function () {
 			return {
 				yeps: function () {
@@ -127,26 +224,7 @@ if (Meteor.isClient) {
 					readlist.push(story);
 					Session.setPersistent('readlist', readlist);
 
-					var iframe = $(document.createElement('iframe'));
-					//TODO: speed up loading, try DOMcontentloaded
-					$('#iframeholder').append(iframe.attr('src', story.link).on('load', function () {
-						var self = this;
-						Meteor.call('scrapeArticle', this.src, function (e, t) {
-							//TODO: stop loading animation
-							story.text = t.text;
-							var readlist = Session.get('readlist');
-
-							readlist = _(readlist).map(function (v) {
-								if (v._id == story._id) {
-									return story;
-								}
-								return v;
-							});
-							Session.setPersistent('readlist', readlist);
-							$('.container').trigger('wordsAdded');
-							$(self).remove();
-						});
-					}));
+					sendToIframe(story);
 				}else {
 					var readlist = Session.get('readlist');
 					readlist.push(story);
@@ -242,6 +320,15 @@ if (Meteor.isClient) {
 				return (totalWords() / maxWords) >= 1;
 			}
 		});
+
+		Template.look.onCreated(function () {
+			Session.set('readState', 'start');
+			//TODO: reloading iframe, find a way to persist between views
+			_.chain(Session.get('readlist')).filter(function (v) {
+				return v.text == undefined
+			}).each(sendToIframe);
+		});
+
 	})();
 
 	//Redicle Functions
@@ -249,7 +336,8 @@ if (Meteor.isClient) {
 		var readingNow = [];
 		var customOptions = {
 			redicleWidth: 500,
-			redicleHeight: 130
+			redicleHeight: 130,
+			speedItems: [250, 300, 350, 400, 450, 500, 550, 600, 650, 700, 750, 800, 850]
 		};
 
 		function resizer() {
@@ -261,7 +349,8 @@ if (Meteor.isClient) {
 					startTextColor: "#bababa",
 					endText: "",
 					endTextColor: "#bababa"
-				}
+				},
+				speedItems: [250, 300, 350, 400, 450, 500, 550, 600, 650, 700, 750, 800, 850]
 			}
 			spritzController.applyOptions(customOptions);
 			$('.spritzer-container').css( {
@@ -270,6 +359,11 @@ if (Meteor.isClient) {
 				margin: 0,
 				padding: 0
 			});
+			$('.spritzer-dropdown-menu').css( {
+				position: 'fixed',
+				top: '1rem',
+				right: '1rem'
+			})
 		};
 
 		function showProgress(now, all) {
@@ -304,10 +398,17 @@ if (Meteor.isClient) {
 
 		function nextArticle() {
 			var readlist = Session.get('readlist');
+			article = {
+				text: undefined
+			};
 
-			while (article.text == undefined && readlist.length) {
-				article = readlist.shift();
+			for (var i = 0; i < readlist.length; i++) {
+				if (readlist[i].text) {
+					article = readlist.splice(i, 1)[0];
+				}
 			}
+
+			//TODO: Add article to history
 
 			//TODO: paginate comments
 			Session.set('discussion', {
@@ -320,6 +421,7 @@ if (Meteor.isClient) {
 
 			if (!article.text) {
 				//TODO: handle this error (no article found)
+				Session.set('readState', done);
 			}
 
 			SpritzClient.spritzify(article.text, 'en_us',
@@ -328,7 +430,7 @@ if (Meteor.isClient) {
 			}, function spritzError(spritzText) {
 				//TODO: handle this error (text not processable)
 			});
-			Session.set('readlist', readlist);
+			Session.setPersistent('readlist', readlist);
 			//TODO: Add article to user's history
 		}
 
@@ -390,6 +492,10 @@ if (Meteor.isClient) {
 
 		Template.read.onCreated(function () {
 			Session.set('readState', 'start');
+			//TODO: reloading iframe, find a way to persist between views
+			_.chain(Session.get('readlist')).filter(function (v) {
+				return v.text == undefined
+			}).each(sendToIframe);
 		});
 
 		/* Comments */
@@ -515,6 +621,14 @@ if (Meteor.isClient) {
 			},
 			'click #link-profile': function () {
 				document.location.href = '/me';
+			}
+		});
+	})();
+
+	(function () {
+		Template.me.events( {
+			'click #to-headlines': function (e, t) {
+				document.location.href = '/look';
 			}
 		});
 	})();
