@@ -123,7 +123,26 @@ body{
   float: left;
   margin: 0 1%;
 }
+/* Read View */
 
+.badge{
+	height: 1rem;
+	width: 1rem;
+	background: #ccc;
+	margin: 0rem;
+	border-radius: 1rem;
+	display: inline-block;
+}
+
+.badge.loading{
+	background: #FF4136;
+}
+
+.badge.ready{
+	background: #2ECC40;
+}
+
+/* End Read View */
 
 
 /* Spritz CSS */

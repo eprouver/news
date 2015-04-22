@@ -171,25 +171,35 @@ if (Meteor.isClient) {
 	function sendToIframe(story) {
 		if (story == undefined) return ;
 
+		function scrapeCallback(e, t) {
+			//TODO: stop loading animation
+			story.text = t.text;
+			var readlist = Session.get('readlist');
+
+			readlist = _(readlist).map(function (v) {
+				if (v._id == story._id) {
+					return story;
+				}
+				return v;
+			});
+			Session.setPersistent('readlist', readlist);
+			$('.container').trigger('wordsAdded');
+			$(self).remove();
+			Meteor.clearInterval(interval);
+		}
+
 		var iframe = document.createElement('iframe');
 		//TODO: speed up loading, try DOMcontentloaded
+		var interval = Meteor.setInterval(function checksrc() {
+			if (iframe.src !== story.link) {
+				var self = iframe;
+				Meteor.call('scrapeArticle', this.src, scrapeCallback);
+			}
+		}, 1000);
+
 		iframe.onload = function () {
 			var self = this;
-			Meteor.call('scrapeArticle', this.src, function (e, t) {
-				//TODO: stop loading animation
-				story.text = t.text;
-				var readlist = Session.get('readlist');
-
-				readlist = _(readlist).map(function (v) {
-					if (v._id == story._id) {
-						return story;
-					}
-					return v;
-				});
-				Session.setPersistent('readlist', readlist);
-				$('.container').trigger('wordsAdded');
-				$(self).remove();
-			});
+			Meteor.call('scrapeArticle', this.src, scrapeCallback);
 		};
 		iframe.src = story.link;
 		$('#iframeholder').append(iframe)
@@ -349,7 +359,7 @@ if (Meteor.isClient) {
 				placeholderText: {
 					startText: "Text Appears Here",
 					startTextColor: "#bababa",
-					endText: "",
+					endText: "Read again?",
 					endTextColor: "#bababa"
 				},
 				speedItems: [250, 300, 350, 400, 450, 500, 550, 600, 650, 700, 750, 800, 850]
@@ -407,6 +417,7 @@ if (Meteor.isClient) {
 			for (var i = 0; i < readlist.length; i++) {
 				if (readlist[i].text) {
 					article = readlist.splice(i, 1)[0];
+					break;
 				}
 			}
 
@@ -456,6 +467,9 @@ if (Meteor.isClient) {
 			nopes: function () {
 				var currentComment = Session.get('discussion').comments[Session.get('discussion').current];
 				return currentComment.nopes;
+			},
+			readlist: function () {
+				return Session.get('readlist');
 			}
 		});
 
@@ -470,7 +484,9 @@ if (Meteor.isClient) {
 				_.delay(function () {
 					$('.progress .inner').show();
 				}, 0);
-				if (Session.get('readlist').length) {
+				if (_.chain(Session.get('readlist')).pluck('text').filter(function (v) {
+					return v
+				}).value()) {
 					Session.set('readState', 'ready');
 				}else {
 					Session.set('readState', 'done');
@@ -482,6 +498,8 @@ if (Meteor.isClient) {
 				Session.set('readState', 'reading');
 			},
 			'click #show-comments': function (e, t) {
+				//TODO: do this programatically
+				
 				AntiModals.overlay('talk', {
 					modal: true,
 					overlayClass: 'primary'
@@ -589,7 +607,6 @@ if (Meteor.isClient) {
 						nopes: 0
 					});
 					AntiModals.dismissOverlay(t.firstNode);
-					nextArticle();
 				}
 			});
 
@@ -640,7 +657,7 @@ if (Meteor.isClient) {
 if (Meteor.isServer) {
 	Meteor.startup(function () {
 		// code to run on server at startup
-		/*
+		/*	
 		(function scrapeFeeds() {
 			_(Scrape.feed('http://feeds.reuters.com/reuters/politicsNews').items).each(function (v) {
 				v.source = 'Reuters';
@@ -649,7 +666,8 @@ if (Meteor.isServer) {
 				Feeds.insert(v);
 			});
 		})();
-		*/
+			*/
+
 
 	});
 

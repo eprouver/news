@@ -290,14 +290,15 @@
   <br/>
   <div class="row">
   	<div class="ten columns">
-	<span>Articles:</span>
-  	{{#each readlist}}
+	<span>Loading:</span>
+	{{#each readlist}}
 	{{#if text}}
-	<span class="animated bounce">Ready</span>
+	<span class="badge ready animated bounce"></span>
 	{{else}}
-	<span class="animated zoomIn">Loading</span>
+	<span class="badge loading animated zoomIn"></span>
 	{{/if}}
 	{{/each}}
+
 	</div>
 	<div class="two columns">
 		{{#if enough}}
@@ -324,7 +325,15 @@
 
 <template name="read">
  <div class="container">
- <h1>Read</h1>
+ <h1>Read
+  	{{#each readlist}}
+	{{#if text}}
+	<span class="badge ready"></span>
+	{{else}}
+	<span class="badge loading"></span>
+	{{/if}}
+	{{/each}}
+ </h1>
   {{ > progress }}
 
   {{ > redicle }}
