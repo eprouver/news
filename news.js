@@ -171,9 +171,9 @@ if (Meteor.isClient) {
 	function sendToIframe(story) {
 		if (story == undefined) return ;
 
-		var iframe = $(document.createElement('iframe'));
+		var iframe = document.createElement('iframe');
 		//TODO: speed up loading, try DOMcontentloaded
-		$('#iframeholder').append(iframe.attr('src', story.link).on('load', function () {
+		iframe.onload = function () {
 			var self = this;
 			Meteor.call('scrapeArticle', this.src, function (e, t) {
 				//TODO: stop loading animation
@@ -190,7 +190,9 @@ if (Meteor.isClient) {
 				$('.container').trigger('wordsAdded');
 				$(self).remove();
 			});
-		}));
+		};
+		iframe.src = story.link;
+		$('#iframeholder').append(iframe)
 	}
 
 	//Look Functions
