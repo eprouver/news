@@ -421,7 +421,7 @@ if (Meteor.isClient) {
 
 			if (!article.text) {
 				//TODO: handle this error (no article found)
-				Session.set('readState', done);
+				Session.set('readState', 'done');
 			}
 
 			SpritzClient.spritzify(article.text, 'en_us',

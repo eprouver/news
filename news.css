@@ -56,13 +56,47 @@ body{
   letter-spacing: 0;
 }
 
-.headline-holder{
-  background: #ccc;
-  padding: 0;
-  height: 18rem;
+.headline-holder, .comment-holder{
+  background: white;
+  height: 22rem;
   position: relative;
-  border: 1px solid #ccc;
+  border: 1px solid #eee;
   margin-bottom: 1rem;
+  border-radius: 4px;
+  border-right-color: #E7FAE8;
+  border-left-color: #FFECEC;
+}
+
+.headline-holder h3, .comment-holder h3{
+  margin-top: 1rem;
+}
+
+.headline-holder:before, .comment-holder:before{
+  content: '';
+  position: absolute;
+   border: 2rem solid #FFECEC;
+  border-top-color: transparent;
+  border-left-color: transparent;
+  border-bottom-color: transparent;
+  height: 0;
+  width: 0;
+  left: -4rem;
+  top: 50%;
+  margin-top: -2rem;
+}
+
+.headline-holder:after, .comment-holder:after{
+  content: '';
+  position: absolute;
+  border: 2rem solid #E7FAE8;
+  border-top-color: transparent;
+  border-right-color: transparent;
+  border-bottom-color: transparent;
+  height: 0;
+  width: 0;
+  right: -4rem;
+  top: 50%;
+  margin-top: -2rem;
 }
 
 .headline{
@@ -106,15 +140,6 @@ body{
 /* End Spritz CSS */
 
 /* Talk Modal */
-
-.comment-holder{
-  background: #ccc;
-  padding: 0;
-  height: 18rem;
-  position: relative;
-  border: 1px solid #ccc;
-  margin-bottom: 1rem;
-}
 
 .comment{
 	background:white;
